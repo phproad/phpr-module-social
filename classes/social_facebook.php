@@ -18,12 +18,10 @@ class Social_Facebook
         return new Social_Facebook($options);
     }
 
-    public function facepile($url=null, $options = array()) 
+    public function facepile($options = array()) 
     {
-        if (!$url)
-            root_url('/', true);
-
         extract(array_merge(array(
+            'url' => root_url('/', true),
             'size' => 'medium',
             'colorscheme' => 'light',
             'max_rows' => 1,
@@ -43,34 +41,35 @@ class Social_Facebook
         return $str;
     }
 
-    public function like_button($url, $options = array())
+    public function like_button($options = array())
     {
-        if (!$url)
-            root_url('/', true);
-
         extract(array_merge(array(
+            'url' => root_url('/', true),
             'show_send_button' => false,
             'show_faces' => false,
-            'action' => 'like', // like or recommend
+            'action' => 'like', // like, recommend
             'size' => 'medium',
             'colorscheme' => 'light',
             'max_rows' => 1,
+            'layout' => 'button_count', // button_count, box_count, standard
             'width' => 100,
             'height' => 35
         ), $this->options, $options));
 
-        $str = '<iframe src="//www.facebook.com/plugins/like.php'
+        $str = '<iframe src="//www.facebook.com/plugins/like.php?'
             .'href='.urlencode($url)
             .'&amp;send='.(($show_send_button) ? 'true' : 'false')
             .'&amp;show_faces='.(($show_faces) ? 'true' : 'false')
             .'&amp;action='.$action
             .'&amp;colorscheme='.$colorscheme
+            .'&amp;layout='.$layout
             .'&amp;font'
             .'&amp;height='.$height
             .'&amp;appId='.$this->options['app_id']
             .'&amp;width='.$width
-            .'&amp;appId='.$this->options['app_id']
             .'" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:'.$width.'px;  height:'.$height.'px;" allowTransparency="true"></iframe>';
+
+        return $str;
     }
 }
 
