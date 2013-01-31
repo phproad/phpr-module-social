@@ -14,7 +14,7 @@ class Social_Setup extends Admin_Settings_Controller
     public function __construct()
     {
         parent::__construct();
-        $this->app_menu = 'system';     
+        $this->app_menu = 'system';
         $this->form_redirect = url('admin/settings/');
     }
 
@@ -38,13 +38,13 @@ class Social_Setup extends Admin_Settings_Controller
         try
         {
             $config = Social_Config::create();
-            $config->save(post($this->form_model_class, array()), $this->formGetEditSessionKey());
+            $config->save(post($this->form_model_class, array()), $this->form_get_edit_session_key());
             Phpr::$session->flash['success'] = 'Social configuration has been successfully saved.';
             Phpr::$response->redirect(url('admin/settings/'));
         }
         catch (Exception $ex)
         {
-            Phpr::$response->ajaxReportException($ex, true, true);
+            Phpr::$response->ajax_report_exception($ex, true, true);
         }       
     }
 

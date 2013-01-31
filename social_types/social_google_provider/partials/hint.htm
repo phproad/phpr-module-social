@@ -1,0 +1,20 @@
+<li>
+    <div class="hint bottom-margin-form">
+        <ol>
+            <li>Go to <a href='https://code.google.com/apis/console/' target="_blank">https://code.google.com/apis/console/</a> and create a new application.</li>
+            <li>On the Dashboard sidebar click on API Access then Click 'Create an OAuth 2.0 client ID...'.</li>
+            <li>On the 'Create Client ID' popup:<br/>
+                - Enter a product name (the name of your website will do). <br/>
+                - Enter the URL for a logo if you like. <br/>
+                - Click Next. <br/>
+                - Select 'Web application' as the application type. <br/>
+                - Then switch to advanced settings by clicking on (more options).
+            </li>
+            <li>Provide this URL as the Callback URL for your application:<br/>
+                <?= Social_Provider_Manager::get_provider('google', false)->get_callback_url() ?>
+            </li>
+            <li>Once you have registered, copy and past the created client credentials into this setup page.</li>
+        </ol>
+        <!--<a title="Hide this hint" href="#" class="close" onclick="return hide_tip('social_descs_google', this)">Close</a>-->
+    </div>
+</li>

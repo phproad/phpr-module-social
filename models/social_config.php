@@ -4,10 +4,6 @@ class Social_Config extends Core_Settings_Model
 {
     public $record_code = 'social_config';
 
-    const mode_smtp = 'smtp';
-    const mode_sendmail = 'sendmail';
-    const mode_mail = 'mail';    
-
     public static function create()
     {
         $config = new self();
@@ -16,8 +12,7 @@ class Social_Config extends Core_Settings_Model
     
     protected function build_form()
     {
-        $this->add_field('facebook_app_id', 'App ID', 'full', db_varchar)->tab('Facebook')
-            ->comment('Enter your Facebook app ID for this site. To get an app ID visit <a href="http://developers.facebook.com/setup" target="_blank">Facebook\'s Setup Page</a> and request one.', 'below', true);
+        $host->add_field('allow_login', 'Allow users to sign on using Social Providers?', 'full', db_bool)->renderAs(frm_checkbox);
     }
 
     protected function init_config_data()
@@ -33,5 +28,4 @@ class Social_Config extends Core_Settings_Model
 
         return true;
     }
-       
 }

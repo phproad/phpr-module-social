@@ -1,0 +1,41 @@
+<div>
+	<h2>Add Social Provider</h2>
+	<div class="content">
+		<div class="form-400">
+			<?=Phpr_Form::open_tag() ?>
+				<? if (!isset($fatalError)): ?>
+					<div class="scrollableList thickBorder height-400">
+						<ul class="selectable_list">
+						<?
+							$last_index = count($provider_list)-1;
+						?>
+						<? foreach ($provider_list as $index=>$info): ?>
+							<?
+								$name = $info['name'];
+								$description = isset($info['description']) ? $info['description'] : null;
+								$url = url('/social/providers/create/'.$info['class_name']);
+							?>
+							<li class="<?=($index == $last_index)?'last':''?>">
+								<a href="<?=$url ?>">
+									<span class="title"><?=h($name) ?></span>
+									<? if ($description): ?>
+										<span class="description">
+											<?=h($description) ?>
+										</span>
+									<? endif ?>
+								</a>
+							</li>
+						<? endforeach ?>
+						</ul>
+					</div>
+					<?=admin_button('Cancel', array('onclick'=>'return cancelPopup()')) ?>
+					<div class="clear"></div>
+				<? else: ?>
+					<?=flash()?>
+					<?=admin_button('Cancel', array('onclick'=>'return cancelPopup()')) ?>
+					<div class="clear"></div>
+				<? endif ?>
+			</form>
+		</div>
+	</div>
+</div>
