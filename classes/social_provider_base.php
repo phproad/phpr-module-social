@@ -77,7 +77,7 @@ class Social_Provider_Base
      */
     public function get_host_object()
     {
-        return Social_Provider::find_provider($this->get_id());
+        return Social_Provider::get_provider($this->get_id());
     }
 
     /**

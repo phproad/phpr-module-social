@@ -6,7 +6,7 @@
             <li>Enter the captcha and click Continue</li>
             <li>Put "<?= root_url('/') ?>" as your App Domain</li>
             <li>Check Website URL and enter the following url:<br/>
-                <?= Social_Provider_Manager::get_provider('facebook', false)->get_callback_url() ?>
+                <?= Social_Provider_Manager::find_provider('facebook')->get_callback_url() ?>
             </li>
             <li>Once you have Saved Changes, copy and paste the created App ID and App Secret into this setup page.</li>
         </ol>

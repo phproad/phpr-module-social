@@ -7,7 +7,7 @@
                 - App name can be your site name, enter anything into the description field<br/>
                 - Website URL is <?= root_url('/', true) ?><br/>
                 - OAuth accept and cancel redirect URL are<br/>
-                  <?= Social_Provider_Manager::get_provider('linkedin', false)->get_callback_url() ?>
+                  <?= Social_Provider_Manager::find_provider('linkedin')->get_callback_url() ?>
             </li>
             <li>Click Add Application and copy and paste the created API Key and Secret Key into this setup page.</li>
         </ol>

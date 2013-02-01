@@ -19,7 +19,6 @@ class Social_Provider extends Db_ActiveRecord
 
     protected $form_fields_defined = false;
     protected static $cache = array();
-    private static $providers = null;
 
     public static function create()
     {
@@ -92,26 +91,12 @@ class Social_Provider extends Db_ActiveRecord
         return $this->provider_obj = new $class_name();
     }
 
-    // Service methods
-
-    public static function find_providers()
+    // Displays providers front end ready
+    public static function list_enabled($order = array())
     {
-        if (!self::$providers)
-            return self::$providers = Social_Provider::create()->find_all();
-
-        return self::$providers;
+        return Social_Provider_Manager::find_active_providers($order);
     }
 
-    public static function find_provider($code)
-    {
-        $providers = self::find_providers();
-        foreach ($providers as $provider)
-        {
-            if ($provider->code == $code)
-                return $provider;
-        }
-        return null;
-    }
 
     // Dynamic model
     // 

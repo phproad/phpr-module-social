@@ -60,7 +60,7 @@ class Social_Providers extends Admin_Controller
     {
         try
         {
-            $providers = Social_Provider_Manager::list_providers();
+            $providers = Social_Provider_Manager::find_providers();
 
             $provider_list = array();
             foreach ($providers as $class_name)
