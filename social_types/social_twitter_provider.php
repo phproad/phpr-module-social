@@ -21,7 +21,7 @@ class Social_Twitter_Provider extends Social_Provider_Base
 	 * @param $host ActiveRecord object to add fields to
 	 * @param string $context Form context. In preview mode its value is 'preview'
 	 */
-	public function build_config_ui($host, $context = null)
+	public function build_host_ui($host, $context = null)
 	{
 		$host->add_form_partial($this->get_partial_path('hint.htm'));
 		$host->add_field('twitter_app_id', 'Consumer Key', 'full', db_text)->renderAs(frm_text);
@@ -31,9 +31,17 @@ class Social_Twitter_Provider extends Social_Provider_Base
 			->comment("Twitter doesn't provide an email address or name so we need to redirect to a page where the user provides this information.");
 	}
 
-	public function is_enabled()
+	public function get_twitter_registration_redirect_options($key_value = -1)
 	{
-		return $this->get_config()->twitter_is_enabled ? true : false;
+		$return = array();
+		$pages = Db_Helper::query_array('select url, title from cms_pages order by title');
+		foreach ($pages as $page)
+		{
+			$return[ $page['url'] ] = $page['title'] . ' ('.$page['url'].')';
+		}
+		array_unshift($return, '');
+
+		return $return;
 	}
 
 	public function get_login_url()
@@ -43,49 +51,64 @@ class Social_Twitter_Provider extends Social_Provider_Base
 
 	public function send_login_request()
 	{
+		$host = $this->get_host_object();
+
 		require_once dirname(__FILE__).'/social_twitter_provider/vendor/twitteroauth/twitteroauth.php';
-		$config = $this->get_config();
 
-		/* Build TwitterOAuth object with client credentials. */
-		$client = new TwitterOAuth($config->twitter_app_id, $config->twitter_secret);
+		// Build TwitterOAuth object with client credentials. 
+		$client = new TwitterOAuth(
+			$host->twitter_app_id, 
+			$host->twitter_secret
+		);
 
-		/* Get temporary credentials. */
+		// Get temporary credentials. 
 		$request_token = $client->getRequestToken($this->get_callback_url());
 
 		Phpr::$session->set('oauth_token', $request_token['oauth_token']);
 		Phpr::$session->set('oauth_token_secret', $request_token['oauth_token_secret']);
 
-		switch ($client->http_code) {
+		switch ($client->http_code) 
+		{
 			case 200:
-				/* Build authorize URL and redirect user to Twitter. */
+				// Build authorize URL and redirect user to Twitter. 
 				$url = $client->getAuthorizeURL(Phpr::$session->get('oauth_token'));
 				header('Location: ' . $url);
-				exit;
+				die();
+				break;
+			
 			default:
 				return $this->set_error(array(
 					'debug' => "Failed to retrieve Twitter request token. HTTP response " . $client->http_code,
 					'customer' => "Could not connect to Twitter. Refresh the page or try again later."
 				));
+				break;
 		}
 	}
 
 	public function login()
 	{
-		/* If the oauth_token is old redirect to the connect page. */
+		// If the oauth_token is old redirect to the connect page. 
 		if (isset($_REQUEST['oauth_token']) && Phpr::$session->get('oauth_token') !== $_REQUEST['oauth_token'])
 			return $this->set_error(array(
 				'debug' => "login(): oauth_token is old.",
 				'customer' => "Your login session has expired. Please try again."
 			));
 
+		$host = $this->get_host_object();
+		
 		require_once dirname(__FILE__).'/social_twitter_provider/twitteroauth/twitteroauth.php';
-		$config = $this->get_config();
 
-		/* Create TwitteroAuth object with app key/secret and token key/secret from default phase */
-		$connection = new TwitterOAuth($config->twitter_app_id, $config->twitter_secret, Phpr::$session->get('oauth_token', ''), Phpr::$session->get('oauth_token_secret'));
+		// Create TwitteroAuth object with app key/secret and token key/secret from default phase 
+		$connection = new TwitterOAuth(
+			$host->twitter_app_id, 
+			$host->twitter_secret, 
+			Phpr::$session->get('oauth_token', ''), 
+			Phpr::$session->get('oauth_token_secret')
+		);
 
-		/* Request access tokens from twitter */
+		// Request access tokens from twitter 
 		$access_token = $connection->getAccessToken($_REQUEST['oauth_verifier']);
+
 		/* $access_token will look like this:
 		array(4) [
 			oauth_token => '#########-zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz',
@@ -94,7 +117,6 @@ class Social_Twitter_Provider extends Social_Provider_Base
 			screen_name => 'scriptsahoy'
 		]
 		*/
-
 
 		/* Save the access tokens. Normally these would be saved in a database for future use. */
 		//Phpr::$session->set('access_token', $access_token);
@@ -125,19 +147,9 @@ class Social_Twitter_Provider extends Social_Provider_Base
 
 	public function after_registration($user)
 	{
-		$config = $this->get_config();
-		if ($config->twitter_registration_redirect)
-			Phpr::$response->redirect($config->twitter_registration_redirect);
-	}
+		$host = $this->get_host_object();
 
-	public function get_twitter_registration_redirect_options($key_value = -1)
-	{
-		$return = array();
-		$pages = Db_Helper::query_array('select url, title from cms_pages order by title');
-		foreach ( $pages as $page )
-			$return[ $page['url'] ] = $page['title'] . ' ('.$page['url'].')';
-		array_unshift($return, '');
-
-		return $return;
+		if ($host->twitter_registration_redirect)
+			Phpr::$response->redirect($host->twitter_registration_redirect);
 	}
 }

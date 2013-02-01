@@ -28,24 +28,20 @@ class Social_Dropbox_Provider extends Social_Provider_Base
 		$host->add_field('dropbox_secret', 'App Secret', 'full', db_text)->renderAs(frm_text);
 	}
 
-	public function is_enabled()
-	{
-		return $this->get_config()->dropbox_is_enabled ? true : false;
-	}
-
 	public function get_client()
 	{
+		$host = $this->get_host_object();
+
 		require_once dirname(__FILE__).'/php-oauth-api/httpclient-2012-10-05/http.php';
 		require_once dirname(__FILE__).'/php-oauth-api/oauth-api-2012-11-19/oauth_client.php';
-		$Config = $this->get_config();
 
 		$client = new oauth_client_class;
 		$client->session_started = true;
 		$client->server = 'Dropbox';
 		$client->redirect_uri = $this->get_callback_url();
-		$client->client_id = $Config->dropbox_app_id;
-		$client->client_secret = $Config->dropbox_secret;
-
+		$client->client_id = $host->dropbox_app_id;
+		$client->client_secret = $host->dropbox_secret;
+		
 		return $client;
 	}
 
@@ -83,7 +79,7 @@ class Social_Dropbox_Provider extends Social_Provider_Base
 
 		$response = array();
 
-		//Move into Shop_Customer fields where possible
+		// Move into User fields where possible
 		$response['token'] = $user->uid;
 		if ( !empty($user->email) ) $response['email'] = filter_var($user->email, FILTER_SANITIZE_EMAIL);
 		$response['first_name'] = $display_name[0];

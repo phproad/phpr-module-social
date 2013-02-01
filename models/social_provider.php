@@ -54,6 +54,15 @@ class Social_Provider extends Db_ActiveRecord
         // $this->add_form_field('code', 'full')->comment('A unique code used to reference this provider by other modules. Leave blank unless instructed.');
     }
 
+    // Filters
+    // 
+
+    public function apply_visibility()
+    {
+        $this->where('is_enabled is not null and is_enabled=1');
+        return $this;
+    }
+
     // Custom columns
     //
 
@@ -81,6 +90,27 @@ class Social_Provider extends Db_ActiveRecord
         $class_name = $this->class_name;
 
         return $this->provider_obj = new $class_name();
+    }
+
+    // Service methods
+
+    public static function find_providers()
+    {
+        if (!self::$providers)
+            return self::$providers = Social_Provider::create()->find_all();
+
+        return self::$providers;
+    }
+
+    public static function find_provider($code)
+    {
+        $providers = self::find_providers();
+        foreach ($providers as $provider)
+        {
+            if ($provider->code == $code)
+                return $provider;
+        }
+        return null;
     }
 
     // Dynamic model

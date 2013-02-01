@@ -18,14 +18,9 @@ class Social_Provider_Base
     public function get_info()
     {
         return array(
-            'name' => 'unknown',
-            'description' => 'Unknown Provider'
+            'id' => 'unknown',
+            'name' => 'Unknown'
         );
-    }
-
-    public function is_enabled()
-    {
-        return false;
     }
 
     /*
@@ -40,6 +35,18 @@ class Social_Provider_Base
      * @return string $url
      */
     public function get_login_url() { }
+
+    public function get_name() 
+    {
+        $info = $this->get_info();
+        return (isset($info['name'])) ? $info['name'] : 'Unknown';
+    }
+
+    public function get_id() 
+    {
+        $info = $this->get_info();
+        return (isset($info['id'])) ? $info['id'] : false;
+    }
 
     /**
      * Builds the payment type administration user interface
@@ -68,12 +75,9 @@ class Social_Provider_Base
     /**
      * Returns a cached copy of the SocialLogin configuration model
      */
-    public function get_config()
+    public function get_host_object()
     {
-        if (!$this->config)
-            $this->config = Social_Config::create();
-
-        return $this->config;
+        return Social_Provider::find_provider($this->get_id());
     }
 
     /**

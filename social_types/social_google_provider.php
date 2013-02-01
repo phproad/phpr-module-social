@@ -28,25 +28,23 @@ class Social_Google_Provider extends Social_Provider_Base
 		$host->add_field('google_secret', 'Client Secret', 'full', db_text)->renderAs(frm_text);
 	}
 
-	public function is_enabled()
-	{
-		return $this->get_config()->google_is_enabled ? true : false;
-	}
-
 	public function get_client()
 	{
+		$host = $this->get_host_object();
+		
 		require_once dirname(__FILE__).'/social_google_provider/vendor/google-api-php-client/Google_Client.php';
 		require_once dirname(__FILE__).'/social_google_provider/vendor/google-api-php-client/contrib/Google_Oauth2Service.php';
-		$Config = $this->get_config();
 
 		$client = new Google_Client();
 		$client->setApplicationName('PHPR Social Login');
 		$client->setApprovalPrompt('auto');
+		
 		//$client->setAccessType('online');
 		// Visit https://code.google.com/apis/console?api=plus to generate your
 		// oauth2_client_id, oauth2_client_secret, and to register your oauth2_redirect_uri.
-		$client->setClientId($Config->google_app_id);
-		$client->setClientSecret($Config->google_secret);
+
+		$client->setClientId($host->google_app_id);
+		$client->setClientSecret($host->google_secret);
 		$client->setRedirectUri($this->get_callback_url());
 		// $client->setDeveloperKey('insert_your_developer_key');
 
@@ -73,9 +71,12 @@ class Social_Google_Provider extends Social_Provider_Base
 		$client = $this->get_client();
 		$oauth2 = new Google_Oauth2Service($client);
 
-		try {
+		try 
+		{
 			$client->authenticate($code);
-		} catch (Exception $e) {
+		} 
+		catch (Exception $e) 
+		{
 			return $this->set_error(array(
 				'debug' => 'Error. Provider responded with: ' . $e->getMessage(),
 				'customer' => $e->getMessage(),
@@ -85,7 +86,7 @@ class Social_Google_Provider extends Social_Provider_Base
 		$user = $oauth2->userinfo->get();
 		$response = array();
 
-		//Move into Shop_Customer fields where possible
+		// Move into User fields where possible
 		$response['token'] = $user['id'];
 		if ( !empty($user['email']) ) $response['email'] = filter_var($user['email'], FILTER_SANITIZE_EMAIL);
 		if ( !empty($user['given_name']) ) $response['first_name'] = $user['given_name'];

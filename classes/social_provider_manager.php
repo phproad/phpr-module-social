@@ -52,30 +52,21 @@ class Social_Provider_Manager
      * @param $only_enabled discard non-enabled providers from the search
      * @return provider object on success, null on failure
      */
-    public static function get_provider($id, $only_enabled=true)
+    public static function get_provider($code, $only_enabled=true)
     {
-        if (empty($id))
+        if (!strlen($code))
             return null;
 
-        $providers = Social_Provider_Manager::list_providers();
-        foreach ($providers as $class_name)
-        {
-            $provider = new $class_name();
-            $info = $provider->get_info();
-            if ($info['id'] == $id)
-            {
-                if ($only_enabled && !$provider->is_enabled())
-                    return null;
-                    // return $this->handle_error(array(
-                    //  'debug' => "Provider '$id' is not found or enabled.",
-                    //  'customer' => "We were unable to determine who you were trying to log in with."
-                    // ));
+        $provider = Social_Provider::create();
+        
+        if ($only_enabled)
+            $provider->apply_visibility();
 
-                return $provider;
-            }
-        }
+        $provider = $provider->find_by_code($code);
 
-        return null;
+        return ($provider)
+            ? $provider->get_provider_object()
+            : null;
     }
 
     /**
@@ -88,18 +79,13 @@ class Social_Provider_Manager
         if (!self::$active_providers)
         {
             $active_providers = array();
-            $providers = self::list_providers();
-            foreach ($providers as $class_name)
+            $providers = Social_Provider::create()->apply_visibility()->find_all();
+            
+            foreach ($providers as $provider)
             {
-                $obj = new $class_name();
-                if ($obj->is_enabled())
-                {
-                    $obj->info = $obj->get_info();
-                    $active_providers[] = $obj;
-                }
+                $active_providers[$provider->code] = $provider->get_provider_object();
             }
 
-            // Cache the provider obj list
             self::$active_providers = $active_providers;
         }
 
@@ -135,7 +121,7 @@ class Social_Provider_Manager
            }
         }
 
-        if (sizeof($providers))
+        if (count($providers))
             $new_order = array_merge($new_order, $providers);
 
         return $new_order;

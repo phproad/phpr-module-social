@@ -28,23 +28,20 @@ class Social_WindowsLive_Provider extends Social_Provider_Base
 		$host->add_field('windowslive_secret', 'Client Secret', 'full', db_text)->renderAs(frm_text);
 	}
 
-	public function is_enabled()
-	{
-		return $this->get_config()->windowslive_is_enabled ? true : false;
-	}
-
 	public function get_client()
 	{
+		$host = $this->get_host_object();
+
 		require_once  dirname(__FILE__).'/php-oauth-api/httpclient-2012-10-05/http.php';
 		require_once  dirname(__FILE__).'/php-oauth-api/oauth-api-2012-11-19/oauth_client.php';
-		$Config = $this->get_config();
+		
 
 		$client = new oauth_client_class;
 		$client->session_started = true;
 		$client->server = 'Microsoft';
 		$client->redirect_uri = $this->get_callback_url();
-		$client->client_id = $Config->windowslive_app_id;
-		$client->client_secret = $Config->windowslive_secret;
+		$client->client_id = $host->windowslive_app_id;
+		$client->client_secret = $host->windowslive_secret;
 		$client->scope = 'wl.basic wl.emails';
 
 		return $client;
@@ -70,7 +67,7 @@ class Social_WindowsLive_Provider extends Social_Provider_Base
 					$client->error = $client->authorization_error;
 					$success = false;
 				}
-				elseif (strlen($client->access_token))
+				else if (strlen($client->access_token))
 				{
 					$success = $client->CallAPI(
 						'https://apis.live.net/v5.0/me',
@@ -79,12 +76,13 @@ class Social_WindowsLive_Provider extends Social_Provider_Base
 			}
 			$success = $client->Finalize($success);
 		}
+		
 		if ($client->exit)
 			die();
 
 		$response = array();
 
-		// Move into Shop_Customer fields where possible
+		// Move into User fields where possible
 		$response['token'] = $user->id;
 		if (!empty($user->emails->account)) $response['email'] = filter_var($user->emails->account, FILTER_SANITIZE_EMAIL);
 		if (!empty($user->emails->personal)) $response['email'] = filter_var($user->emails->personal, FILTER_SANITIZE_EMAIL);

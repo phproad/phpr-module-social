@@ -28,19 +28,15 @@ class Social_Facebook_Provider extends Social_Provider_Base
 		$host->add_field('facebook_secret', 'App Secret', 'full', db_text)->renderAs(frm_text);
 	}
 
-	public function is_enabled()
-	{
-		return $this->get_config()->facebook_is_enabled ? true : false;
-	}
-
 	public function get_client()
 	{
+		$host = $this->get_host_object();
+		
 		require_once dirname(__FILE__).'/social_facebook_provider/vendor/facebook-php-sdk/facebook.php';
-		$config = $this->get_config();
 
 		$client = new Facebook(array(
-			'appId'  => $config->facebook_app_id,
-			'secret' => $config->facebook_secret,
+			'appId'  => $host->facebook_app_id,
+			'secret' => $host->facebook_secret,
 		));
 
 		return $client;
