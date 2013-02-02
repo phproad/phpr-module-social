@@ -14,7 +14,7 @@ class Social_Provider_Base extends Phpr_Extension_Base
     );
 
 
-    // Returns information about the event
+    // Returns information about the provider
     public function get_info()
     {
         return array(
@@ -59,18 +59,14 @@ class Social_Provider_Base extends Phpr_Extension_Base
      * @param $host ActiveRecord object to add fields to
      * @param string $context Form context. In preview mode its value is 'preview'
      */
-    public function build_config_ui($host)
-    {
-    }
+    public function build_config_ui($host, $context = null) { }
 
     /**
      * Initializes configuration data when the social provider is first created
      * Use host object to access and set fields previously added with build_config_ui method.
      * @param $host ActiveRecord object containing configuration fields values
      */
-    public function init_config_data($host)
-    {
-    }
+    public function init_config_data($host) { }
 
     /**
      * Returns a cached copy of the SocialLogin configuration model
@@ -83,10 +79,7 @@ class Social_Provider_Base extends Phpr_Extension_Base
     /**
      * Perform an action after a $user has been registered and signed in
      */
-    public function after_registration($user)
-    {
-
-    }
+    public function after_registration($user) { }
 
     /**
      * The URL on our site that OAuth requests will respond to with login details

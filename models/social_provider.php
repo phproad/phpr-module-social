@@ -45,6 +45,8 @@ class Social_Provider extends Db_ActiveRecord
         if ($this->class_name && !$this->is_extended_with($this->class_name))
             $this->extend_with($this->class_name);
 
+        $this->form_context = $context;
+
         // Build form
         $this->add_form_field('is_enabled');
         $this->build_config_ui($this, $context);
@@ -53,8 +55,11 @@ class Social_Provider extends Db_ActiveRecord
 
         // Load provider's default data
         if ($this->is_new_record())
-            $this->init_config_data($this);        
+            $this->init_config_data($this);
     }
+
+    // Events
+    // 
 
     public function after_fetch()
     {
@@ -90,9 +95,6 @@ class Social_Provider extends Db_ActiveRecord
 
     public function eval_provider_name()
     {
-        //if ($this->class_name && !$this->is_extended_with($this->class_name))
-        //    $this->extend_with($this->class_name);
-
         return $this->get_name();
     }
 
