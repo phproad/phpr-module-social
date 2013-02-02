@@ -2,31 +2,21 @@
 
 class Social_Facebook 
 {
-    public $options;
+    const provider_code = 'facebook';
 
-    public function __construct($options = array()) 
+    public static function facepile($options = array()) 
     {
-        $social = Social_Config::create(); 
+        $provider = Social_Provider::get_provider(self::provider_code);
+        if (!$provider)
+            return "";
 
-        $this->options = array_merge(array(
-            'app_id' => $social->facebook_app_id
-        ), $options);
-    }
-    
-    public static function create($options = array()) 
-    {
-        return new Social_Facebook($options);
-    }
-
-    public function facepile($options = array()) 
-    {
         extract(array_merge(array(
             'url' => root_url('/', true),
             'size' => 'medium',
             'colorscheme' => 'light',
             'max_rows' => 1,
             'width' => 200
-        ), $this->options, $options));
+        ), $options));
         
 
         $str = '<iframe src="//www.facebook.com/plugins/facepile.php?'
@@ -35,14 +25,19 @@ class Social_Facebook
             .'&amp;max_rows='.$max_rows
             .'&amp;width='.$width
             .'&amp;colorscheme='.$colorscheme
-            .'&amp;appId='.$this->options['app_id']
+            .'&amp;appId='.$provider->facebook_app_id
             .'" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:'.$width.'px;" allowTransparency="true"></iframe>';
 
         return $str;
     }
 
-    public function like_button($options = array())
+    public static function like_button($options = array())
     {
+        $provider = Social_Provider::get_provider(self::provider_code);
+
+        if (!$provider)
+            return "";
+
         extract(array_merge(array(
             'url' => root_url('/', true),
             'show_send_button' => false,
@@ -54,7 +49,7 @@ class Social_Facebook
             'layout' => 'button_count', // button_count, box_count, standard
             'width' => 100,
             'height' => 35
-        ), $this->options, $options));
+        ), $options));
 
         $str = '<iframe src="//www.facebook.com/plugins/like.php?'
             .'href='.urlencode($url)
@@ -65,7 +60,7 @@ class Social_Facebook
             .'&amp;layout='.$layout
             .'&amp;font'
             .'&amp;height='.$height
-            .'&amp;appId='.$this->options['app_id']
+            .'&amp;appId='.$provider->facebook_app_id
             .'&amp;width='.$width
             .'" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:'.$width.'px;  height:'.$height.'px;" allowTransparency="true"></iframe>';
 
