@@ -15,7 +15,7 @@ class Social_Actions extends Cms_Action_Base
             return;
         }
         
-        $provider = Social_Provider_Manager::get_provider($user_data['provider_id']);
+        $provider = Social_Provider::get_provider($user_data['provider_id']);
         if (empty($provider))
         {
             Phpr::$session->flash['error'] = "Unable to determine login provider.";
@@ -37,7 +37,7 @@ class Social_Actions extends Cms_Action_Base
         //  return;
         //}
 
-        if (post('flynsarmysocialmedia_email_confirmation'))
+        if (post('social_email_confirmation'))
         {
             $validation = new Phpr_Validation();
             $validation->add('email', 'Email')->fn('trim')->fn('mb_strtolower')->required()->Email('Please provide valid email address.');
@@ -70,9 +70,9 @@ class Social_Actions extends Cms_Action_Base
                 }
 
                 $url = root_url(
-                    "social_associate_email?confirm=".
+                    "api_social_provider_associate?confirm=".
                         $user_provider->id.
-                        $user_provider->shop_user_id.
+                        $user_provider->user_id.
                         $user_provider->provider_token,
                     true
                 );
@@ -87,7 +87,7 @@ class Social_Actions extends Cms_Action_Base
                 else
                     Phpr::$session->flash['success'] = $provider->info['name'] . " successfully associated with your account. An email confirmation has been sent to ".post('email');
 
-                if ( post('redirect_associated') )
+                if (post('redirect_associated'))
                     Phpr::$response->redirect(post('redirect_associated'));
                 return;
             }

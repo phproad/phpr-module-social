@@ -5,7 +5,7 @@ class Social_LinkedIn_Provider extends Social_Provider_Base
 	public function get_info()
 	{
 		return array(
-			'id' => 'linkedin',
+			'code' => 'linkedin',
 			'name'=>'LinkedIn',
 		);
 	}

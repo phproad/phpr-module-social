@@ -5,7 +5,7 @@ class Social_Facebook_Provider extends Social_Provider_Base
 	public function get_info()
 	{
 		return array(
-			'id' => 'facebook',
+			'code' => 'facebook',
 			'name'=>'Facebook',
 		);
 	}

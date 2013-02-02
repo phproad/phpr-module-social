@@ -38,9 +38,9 @@ class Social_Module extends Core_Module_Base
     public function subscribe_access_points($action=null)
     {
         return array(
-            'api_social_provider_callback' => 'provider_callback',
-            'api_social_provider_login' => 'provider_login',
-            'api_social_associate_email' => 'associate_email',
+            'api_social_provider_callback' => 'Social_Manager::api_callback',
+            'api_social_provider_login' => 'Social_Manager::api_login',
+            'api_social_provider_associate' => 'Social_Manager::api_associate',
         );
     }
 }

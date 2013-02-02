@@ -5,7 +5,7 @@ class Social_Flickr_Provider extends Social_Provider_Base
 	public function get_info()
 	{
 		return array(
-			'id' => 'flickr',
+			'code' => 'flickr',
 			'name'=>'Flickr',
 		);
 	}

@@ -15,6 +15,9 @@ class Social_Provider extends Db_ActiveRecord
     public $custom_columns = array('provider_name' => db_text);
     public $encrypted_columns = array('config_data');
 
+    private static $_provider_cache = null;
+    private static $_active_providers = null;
+
     public $fetched_data = array();
 
     protected $form_fields_defined = false;
@@ -29,28 +32,48 @@ class Social_Provider extends Db_ActiveRecord
     {
         $this->define_column('provider_name', 'Provider');
         $this->define_column('is_enabled', 'Enabled')->order('desc');
-        // $this->define_column('code', 'API Code')->defaultInvisible()->validation()->fn('trim')->fn('mb_strtolower')->unique('A payment gateway with the specified API code already exists');
+        $this->define_column('code', 'API Code')->defaultInvisible()->validation()->fn('trim')->fn('mb_strtolower')->unique('A payment gateway with the specified API code already exists');
     }
 
     public function define_form_fields($context = null)
     {
-        if ($this->form_fields_defined)
-            return false;
-
+        // Prevent duplication
+        if ($this->form_fields_defined) return false; 
         $this->form_fields_defined = true;
 
+        // Mixin provider class
+        if ($this->class_name && !$this->is_extended_with($this->class_name))
+            $this->extend_with($this->class_name);
+
+        // Build form
         $this->add_form_field('is_enabled');
+        $this->build_config_ui($this, $context);
+        $this->add_form_field('code', 'full')->disabled()
+            ->comment('A unique code used to reference this provider by other modules.');
 
-        $obj = $this->get_provider_object();
-        $method_info = $obj->get_info();
+        // Load provider's default data
+        if ($this->is_new_record())
+            $this->init_config_data($this);        
+    }
 
-        $this->get_provider_object()->build_config_ui($this, $context);
-        if (!$this->is_new_record())
-            $this->load_dynamic_data();
-        else
-            $this->get_provider_object()->init_config_data($this);
+    public function after_fetch()
+    {
+        // Mixin provider class
+        if ($this->class_name && !$this->is_extended_with($this->class_name))
+            $this->extend_with($this->class_name);
+    }
 
-        // $this->add_form_field('code', 'full')->comment('A unique code used to reference this provider by other modules. Leave blank unless instructed.');
+    // Options
+    //
+
+    public function get_added_field_options($db_name, $key_value = -1)
+    {
+        $method_name = "get_".$db_name."_options";
+
+        if (!$this->method_exists($method_name))
+            throw new Phpr_SystemException("Method ".$method_name." is not defined in ".$this->class_name." class");
+
+        return $this->$method_name($key_value);
     }
 
     // Filters
@@ -67,36 +90,62 @@ class Social_Provider extends Db_ActiveRecord
 
     public function eval_provider_name()
     {
-        $obj = $this->get_provider_object();
-        $info = $obj->get_info();
-        if (array_key_exists('name', $info))
-            return $info['name'];
+        //if ($this->class_name && !$this->is_extended_with($this->class_name))
+        //    $this->extend_with($this->class_name);
 
+        return $this->get_name();
+    }
+
+    // Model handling
+    // 
+
+    public static function find_all_providers()
+    {
+        if (!self::$_provider_cache)
+            return self::$_provider_cache = Social_Provider::create()->find_all();
+
+        return self::$_provider_cache;
+    }
+
+    public static function get_provider($code)
+    {
+        $providers = self::find_all_providers();
+        foreach ($providers as $provider)
+        {
+            if ($provider->code == $code)
+                return $provider;
+        }
         return null;
     }
 
-    // Getters
-    // 
-
-    public function get_provider_object()
+    /**
+     * Returns a list of active Provider objects
+     * @param (optional) array $order - array of provider_ids
+     * @return array of provider objects
+     */
+    public static function find_all_active_providers($order = array())
     {
-        if ($this->provider_obj !== null)
-            return $this->provider_obj;
+        if (!self::$_active_providers)
+        {
+            $active_providers = array();
+            $providers = self::find_all_providers();
+            
+            foreach ($providers as $provider)
+            {
+                if ($provider->is_enabled)
+                    $active_providers[$provider->code] = $provider;
+            }
 
-        if (!Phpr::$class_loader->load($this->class_name))
-            throw new Phpr_ApplicationException("Class ".$this->class_name." not found");
+            self::$_active_providers = $active_providers;
+        }
 
-        $class_name = $this->class_name;
-
-        return $this->provider_obj = new $class_name();
+        if (self::$_active_providers)
+        {
+            return $order 
+                ? self::sort_active_providers(self::$_active_providers, $order) 
+                : self::$_active_providers;
+        }
     }
-
-    // Displays providers front end ready
-    public static function list_enabled($order = array())
-    {
-        return Social_Provider_Manager::find_active_providers($order);
-    }
-
 
     // Dynamic model
     // 

@@ -5,7 +5,7 @@
  * All other payment types must be derived from this class
  */
 
-class Social_Provider_Base
+class Social_Provider_Base extends Phpr_Extension_Base
 {
     public $config;
     public $error = array(
@@ -18,7 +18,7 @@ class Social_Provider_Base
     public function get_info()
     {
         return array(
-            'id' => 'unknown',
+            'code' => 'unknown',
             'name' => 'Unknown'
         );
     }
@@ -42,10 +42,10 @@ class Social_Provider_Base
         return (isset($info['name'])) ? $info['name'] : 'Unknown';
     }
 
-    public function get_id() 
+    public function get_code() 
     {
         $info = $this->get_info();
-        return (isset($info['id'])) ? $info['id'] : false;
+        return (isset($info['code'])) ? $info['code'] : 'unknown';
     }
 
     /**
@@ -77,7 +77,7 @@ class Social_Provider_Base
      */
     public function get_host_object()
     {
-        return Social_Provider::get_provider($this->get_id());
+        return Social_Provider::get_provider($this->get_code());
     }
 
     /**
@@ -94,8 +94,7 @@ class Social_Provider_Base
      */
     public function get_callback_url()
     {
-        $info = $this->get_info();
-        return root_url('/social_provider_callback/?hauth.done='.$info['id'], true);
+        return root_url('/api_social_provider_callback/?hauth.done='.$this->get_code(), true);
     }
 
     public function set_error(array $messages)

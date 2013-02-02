@@ -5,7 +5,7 @@ class Social_Google_Provider extends Social_Provider_Base
 	public function get_info()
 	{
 		return array(
-			'id' => 'google',
+			'code' => 'google',
 			'name'=>'Google',
 		);
 	}

@@ -11,7 +11,7 @@
                 - Then switch to advanced settings by clicking on (more options).
             </li>
             <li>Provide this URL as the Callback URL for your application:<br/>
-                <?= Social_Provider_Manager::find_provider('google')->get_callback_url() ?>
+                <?= Social_Manager::get_provider('google')->get_callback_url() ?>
             </li>
             <li>Once you have registered, copy and past the created client credentials into this setup page.</li>
         </ol>

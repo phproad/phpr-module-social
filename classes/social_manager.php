@@ -1,10 +1,10 @@
 <?php
 
-class Social_Provider_Manager
+class Social_Manager
 {
     private static $object_cache = null;
     private static $class_cache = null;
-    private static $provider_cache = null;
+    
     private static $active_providers = array();
 
     // Class/Object handling
@@ -16,7 +16,7 @@ class Social_Provider_Manager
      * <module_name>_<provider_id>_provider.php
      * @return array of provider class names
      */
-    public static function find_provider_classes()
+    public static function get_provider_class_names()
     {
         if (self::$class_cache !== null)
             return self::$class_cache;
@@ -51,29 +51,16 @@ class Social_Provider_Manager
         return self::$class_cache = $provider_classes;
     }
 
-    public static function find_providers()
+    public static function get_providers()
     {
         if (self::$object_cache !== null)
             return self::$object_cache;
 
         $provider_objects = array();
-        foreach (self::find_provider_classes() as $class_name)
+        foreach (self::get_provider_class_names() as $class_name)
             $provider_objects[] = new $class_name();
         
         return self::$object_cache = $provider_objects;
-    }
-
-    public static function find_active_providers($order = array())
-    {
-        $providers = self::get_active_providers($order);
-
-        $provider_objects = array();
-        foreach ($providers as $provider)
-        {
-            $provider_objects[] = $provider->get_provider_object();
-        }
-
-        return $provider_objects;
     }
 
     /**
@@ -82,66 +69,15 @@ class Social_Provider_Manager
      * @param $only_enabled discard non-enabled providers from the search
      * @return provider object on success, null on failure
      */
-    public static function find_provider($code)
+    public static function get_provider($code)
     {
-        $providers = self::find_providers();
+        $providers = self::get_providers();
         foreach ($providers as $provider)
         {
             if ($provider->get_code() == $code)
                 return $provider;
         }
         return new Social_Provider_Base();
-    }
-
-    // Model handling
-    // 
-
-    public static function get_providers()
-    {
-        if (!self::$provider_cache)
-            return self::$provider_cache = Social_Provider::create()->find_all();
-
-        return self::$provider_cache;
-    }
-
-    public static function get_provider($code)
-    {
-        $providers = self::find_providers();
-        foreach ($providers as $provider)
-        {
-            if ($provider->code == $code)
-                return $provider;
-        }
-        return null;
-    }
-
-    /**
-     * Returns a list of active Provider objects
-     * @param (optional) array $order - array of provider_ids
-     * @return array of provider objects
-     */
-    public static function get_active_providers($order = array())
-    {
-        if (!self::$active_providers)
-        {
-            $active_providers = array();
-            $providers = self::get_providers();
-            
-            foreach ($providers as $provider)
-            {
-                if ($provider->is_enabled)
-                    $active_providers[$provider->code] = $provider;
-            }
-
-            self::$active_providers = $active_providers;
-        }
-
-        if (self::$active_providers)
-        {
-            return $order 
-                ? self::sort_active_providers(self::$active_providers, $order) 
-                : self::$active_providers;
-        }
     }
 
     /**
@@ -173,4 +109,5 @@ class Social_Provider_Manager
 
         return $new_order;
     }
+
 }

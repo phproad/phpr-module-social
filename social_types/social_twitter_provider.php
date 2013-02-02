@@ -5,7 +5,7 @@ class Social_Twitter_Provider extends Social_Provider_Base
 	public function get_info()
 	{
 		return array(
-			'id' => 'twitter',
+			'code' => 'twitter',
 			'name'=>'Twitter',
 		);
 	}
@@ -21,13 +21,12 @@ class Social_Twitter_Provider extends Social_Provider_Base
 	 * @param $host ActiveRecord object to add fields to
 	 * @param string $context Form context. In preview mode its value is 'preview'
 	 */
-	public function build_host_ui($host, $context = null)
+	public function build_config_ui($host, $context = null)
 	{
 		$host->add_form_partial($this->get_partial_path('hint.htm'));
 		$host->add_field('twitter_app_id', 'Consumer Key', 'full', db_text)->renderAs(frm_text);
 		$host->add_field('twitter_secret', 'Consumer Secret', 'full', db_text)->renderAs(frm_text);
 		$host->add_field('twitter_registration_redirect', 'Page to redirect to on registration', 'full', db_text)->renderAs(frm_dropdown)
-			->optionsMethod('get_added_field_options')->optionStateMethod('get_added_field_option_state')
 			->comment("Twitter doesn't provide an email address or name so we need to redirect to a page where the user provides this information.");
 	}
 
