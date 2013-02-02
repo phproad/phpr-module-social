@@ -26,7 +26,7 @@ class Social_Twitter_Provider extends Social_Provider_Base
 		$host->add_form_partial($this->get_partial_path('hint.htm'));
 		$host->add_field('twitter_app_id', 'Consumer Key', 'full', db_text)->renderAs(frm_text);
 		$host->add_field('twitter_secret', 'Consumer Secret', 'full', db_text)->renderAs(frm_text);
-		$host->add_field('twitter_registration_redirect', 'Page to redirect to on registration', 'full', db_text)->renderAs(frm_dropdown)
+		$host->add_field('registration_redirect', 'Page to redirect to on registration', 'full', db_text)->renderAs(frm_dropdown)
 			->comment("Twitter doesn't provide an email address or name so we need to redirect to a page where the user provides this information.");
 	}
 
@@ -135,9 +135,9 @@ class Social_Twitter_Provider extends Social_Provider_Base
 		$first_name = reset($screen_name);
 		$last_name = sizeof($screen_name) > 1 ? end($screen_name) : '';
 
+		// Use their twitter user id as the unique identifier so if they
+		// revoke the token and relogin we won't create a duplicate user
 		return array(
-			//Use their twitter user id as the unique identifier so if they
-			//revoke the token and relogin we won't create a duplicate user
 			'token' => $access_token['user_id'],
 			'first_name' => $first_name,
 			'last_name' => $last_name,

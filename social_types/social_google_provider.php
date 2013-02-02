@@ -61,7 +61,7 @@ class Social_Google_Provider extends Social_Provider_Base
 
 	public function login()
 	{
-		$code = Phpr::$request->getField('code', '');
+		$code = Phpr::$request->get_field('code', '');
 		if ( empty($code) )
 			return $this->set_error(array(
 				'debug' => "An error occurred. 'code' GET variable not found.",

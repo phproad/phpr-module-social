@@ -32,8 +32,8 @@ class Social_LinkedIn_Provider extends Social_Provider_Base
 	{
 		$host = $this->get_host_object();
 
-		require_once  dirname(__FILE__).'/php-oauth-api/httpclient-2012-10-05/http.php';
-		require_once  dirname(__FILE__).'/php-oauth-api/oauth-api-2012-11-19/oauth_client.php';
+		require_once $this->get_vendor_path('/php-oauth-api/httpclient/http.php');
+		require_once $this->get_vendor_path('/php-oauth-api/oauth-api/oauth_client.php');
 
 		$client = new oauth_client_class();
 		$client->session_started = true;
@@ -75,8 +75,12 @@ class Social_LinkedIn_Provider extends Social_Provider_Base
 			}
 			$success = $client->Finalize($success);
 		}
+
 		if ($client->exit)
-			die();
+			throw new Exception('Client ended session');
+
+		if (!isset($user))
+			throw new Exception('Client did not return a valid user, check your API credentials');
 
 		$response = array();
 

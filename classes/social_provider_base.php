@@ -104,7 +104,21 @@ class Social_Provider_Base extends Phpr_Extension_Base
     public function get_partial_path($partial_name = null)
     {
         $class_name = get_class($this);
-        $class_path = File_Path::find_path_to_class($class_name);
+        $class_path = File_Path::get_path_to_class($class_name);
         return $class_path.'/'.strtolower($class_name).'/partials/'.$partial_name;
     }
+
+    /**
+     * Returns full relative path to a resource file situated in the provider's resources directory.
+     * @param string $path Specifies the relative resource file name, for example '/assets/javascript/widget.js'
+     * @return string Returns full relative path, suitable for passing to the controller's addCss() or addJavaScript() method.
+     */
+    public function get_vendor_path($path)
+    {
+        if (substr($path, 0, 1) != '/')
+            $path = '/'.$path;
+            
+        return PATH_APP.'/'.PHPR_MODULES.'/social/vendor'.$path;
+    }
+
 }

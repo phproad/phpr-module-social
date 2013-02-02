@@ -78,9 +78,15 @@ class Social_Facebook_Provider extends Social_Provider_Base
 
 		$response = array();
 		$response['token'] = $user_profile['id'];
-		if ( !empty($user_profile['email']) ) $response['email'] = $user_profile['email'];
-		if ( !empty($user_profile['first_name']) ) $response['first_name'] = $user_profile['first_name'];
-		if ( !empty($user_profile['last_name']) ) $response['first_name'] = $user_profile['last_name'];
+
+		if (isset($user_profile['email'])) 
+			$response['email'] = $user_profile['email'];
+
+		if (isset($user_profile['first_name'])) 
+			$response['first_name'] = $user_profile['first_name'];
+
+		if (isset($user_profile['last_name'])) 
+			$response['first_name'] = $user_profile['last_name'];
 
 		return $response;
 	}

@@ -19,6 +19,15 @@ class Social_Provider_User extends Db_ActiveRecord
         $this->define_column('provider_token', 'Login Provider Token', db_varchar)->validation()->fn('trim');
     }
 
+    public function before_create($session_key = null)
+    {
+        // Prevent duplication
+        Db_Helper::query("delete from social_provider_users where user_id=:user_id and provider_id=:provider_id", array(
+            'user_id' => $this->user_id,
+            'provider_id' => $this->provider_id
+        ));
+    }
+
     public static function set_orders($item_ids, $item_orders)
     {
         if (is_string($item_ids))

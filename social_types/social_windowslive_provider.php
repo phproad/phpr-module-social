@@ -32,9 +32,8 @@ class Social_WindowsLive_Provider extends Social_Provider_Base
 	{
 		$host = $this->get_host_object();
 
-		require_once  dirname(__FILE__).'/php-oauth-api/httpclient-2012-10-05/http.php';
-		require_once  dirname(__FILE__).'/php-oauth-api/oauth-api-2012-11-19/oauth_client.php';
-		
+		require_once $this->get_vendor_path('/php-oauth-api/httpclient/http.php');
+		require_once $this->get_vendor_path('/php-oauth-api/oauth-api/oauth_client.php');
 
 		$client = new oauth_client_class;
 		$client->session_started = true;
@@ -78,18 +77,33 @@ class Social_WindowsLive_Provider extends Social_Provider_Base
 		}
 		
 		if ($client->exit)
-			die();
+			throw new Exception('Client ended session');
+
+		if (!isset($user))
+			throw new Exception('Client did not return a valid user, check your API credentials');
 
 		$response = array();
 
 		// Move into User fields where possible
 		$response['token'] = $user->id;
-		if (!empty($user->emails->account)) $response['email'] = filter_var($user->emails->account, FILTER_SANITIZE_EMAIL);
-		if (!empty($user->emails->personal)) $response['email'] = filter_var($user->emails->personal, FILTER_SANITIZE_EMAIL);
-		if (!empty($user->emails->business)) $response['email'] = filter_var($user->emails->business, FILTER_SANITIZE_EMAIL);
-		if (!empty($user->emails->preferred)) $response['email'] = filter_var($user->emails->preferred, FILTER_SANITIZE_EMAIL);
-		if (!empty($user->first_name)) $response['first_name'] = $user->first_name;
-		if (!empty($user->last_name)) $response['last_name'] = $user->last_name;
+		
+		if (isset($user->emails->account)) 
+			$response['email'] = filter_var($user->emails->account, FILTER_SANITIZE_EMAIL);
+		
+		if (isset($user->emails->personal)) 
+			$response['email'] = filter_var($user->emails->personal, FILTER_SANITIZE_EMAIL);
+		
+		if (isset($user->emails->business)) 
+			$response['email'] = filter_var($user->emails->business, FILTER_SANITIZE_EMAIL);
+		
+		if (isset($user->emails->preferred)) 
+			$response['email'] = filter_var($user->emails->preferred, FILTER_SANITIZE_EMAIL);
+		
+		if (isset($user->first_name)) 
+			$response['first_name'] = $user->first_name;
+		
+		if (isset($user->last_name)) 
+			$response['last_name'] = $user->last_name;
 
 		return $response;
 	}
