@@ -2,9 +2,10 @@
 
 class Social_Provider_Manager
 {
-    public static $object_cache = null;
-    public static $provider_cache = null;
-    public static $active_providers = array();
+    private static $object_cache = null;
+    private static $class_cache = null;
+    private static $provider_cache = null;
+    private static $active_providers = array();
 
     // Class/Object handling
     // 
@@ -15,10 +16,10 @@ class Social_Provider_Manager
      * <module_name>_<provider_id>_provider.php
      * @return array of provider class names
      */
-    public static function find_providers()
+    public static function find_provider_classes()
     {
-        if (self::$object_cache !== null)
-            return self::$object_cache;
+        if (self::$class_cache !== null)
+            return self::$class_cache;
 
         $modules = Core_Module_Manager::find_modules();
         foreach ($modules as $id => $module_info)
@@ -38,15 +39,27 @@ class Social_Provider_Manager
         }
 
         $classes = get_declared_classes();
-        $provider_objects = array();
-        foreach ($classes as $class)
+        $provider_classes = array();
+        foreach ($classes as $class_name)
         {
-            if (!preg_match('/_Provider$/i', $class) || get_parent_class($class) != 'Social_Provider_Base')
+            if (!preg_match('/_Provider$/i', $class_name) || get_parent_class($class_name) != 'Social_Provider_Base')
                 continue;
 
-            $provider_objects[] = $class;
+            $provider_classes[] = $class_name;            
         }
 
+        return self::$class_cache = $provider_classes;
+    }
+
+    public static function find_providers()
+    {
+        if (self::$object_cache !== null)
+            return self::$object_cache;
+
+        $provider_objects = array();
+        foreach (self::find_provider_classes() as $class_name)
+            $provider_objects[] = new $class_name();
+        
         return self::$object_cache = $provider_objects;
     }
 
@@ -74,10 +87,10 @@ class Social_Provider_Manager
         $providers = self::find_providers();
         foreach ($providers as $provider)
         {
-            if ($provider->get_id() == $code)
+            if ($provider->get_code() == $code)
                 return $provider;
         }
-        return null;
+        return new Social_Provider_Base();
     }
 
     // Model handling
