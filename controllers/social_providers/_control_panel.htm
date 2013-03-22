@@ -1,4 +1,4 @@
-<div class="toolbar">
-	<?=cp_button('Add provider', 'icon add', array('href'=>'#', 'onclick'=>"new PopupForm('index_on_load_add_popup'); return false;")) ?>
-    <div class="clear"></div>
-</div>
+<ul class="nav">
+	<li><?=cp_button('Add provider', 'plus', array('href'=>'#', 'onclick'=>"new PopupForm('index_on_load_add_popup'); return false;")) ?></li>
+	<li><?=cp_button('Manage configuration', 'cog', url('/social/setup')) ?></li>
+</ul>

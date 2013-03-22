@@ -5,14 +5,13 @@
 
 	<? if (!isset($fatalError)): ?>
 
-		<div class="scoreboard_report header_report">
+		<div class="scoreboard-report">
 			<ul>
-				<li class="align_left last">
+				<li>
 					<p>Social providers</p>
 					<h3><?=h($form_model->provider_name) ?></h3>
 				</li>
 			</ul>
-			<div class="clear"></div>
 		</div>
 
 		<div class="form-500">
@@ -20,10 +19,11 @@
 
 				<? $this->form_render() ?>
 
-				<div class="form_toolbar">
-					<?=admin_ajax_button('Create', 'create_onSave', array('class'=>'positive'), "prepareFunction: function(){phprTriggerSave();}") ?>
-					<?=admin_ajax_button('Cancel', 'create_onCancel') ?>
-					<div class="clear"></div>
+				<div id="fixed-toolbar" class="top">
+					<div class="form-toolbar">
+						<?=admin_ajax_button('Create', 'create_on_save', array('class'=>'btn-success'), "prepareFunction: function(){phprTriggerSave();}") ?>
+						<?=admin_ajax_button('Cancel', 'create_on_cancel') ?>
+					</div>
 				</div>
 
 			</form>
