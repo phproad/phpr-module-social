@@ -132,8 +132,6 @@ class Social_Facebook_Wall_Provider extends Notify_Provider_Base
 			$facebook = $this->get_facebook_client();
 			$fb_user_id = $facebook->getUser();
 			$fb_user_profile = $facebook->api('/me');
-			trace_log($fb_user_profile);
-
 
 			$uri = '/me/feed';
 			$facebook->api($uri, 'post', $message);
