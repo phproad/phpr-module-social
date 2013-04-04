@@ -13,7 +13,7 @@
 							<?
 								$name = $provider->get_name();
 								$description = null;
-								$url = url('/social/providers/create/'.get_class($provider));
+								$url = url('social/providers/create/'.get_class($provider));
 							?>
 							<li class="<?=($index == $last_index)?'last':''?>">
 								<a href="<?=$url ?>">

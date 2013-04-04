@@ -23,11 +23,6 @@ class Social_Provider extends Db_ActiveRecord
 	protected $form_fields_defined = false;
 	protected static $cache = array();
 
-	public static function create()
-	{
-		return new self();
-	}
-
 	public function define_columns($context = null)
 	{
 		$this->define_column('provider_name', 'Provider');
@@ -41,20 +36,21 @@ class Social_Provider extends Db_ActiveRecord
 		if ($this->form_fields_defined) return false; 
 		$this->form_fields_defined = true;
 
-		// Mixin provider class
-		if ($this->class_name && !$this->is_extended_with($this->class_name))
-			$this->extend_with($this->class_name);
+		$has_extension = $this->init_provider_extension();
 
 		$this->form_context = $context;
 
 		// Build form
 		$this->add_form_field('is_enabled');
-		$this->build_config_ui($this, $context);
+		
+		if ($has_extension)
+			$this->build_config_ui($this, $context);
+
 		$this->add_form_field('code', 'full')->disabled()
 			->comment('A unique code used to reference this provider by other modules.');
 
 		// Load provider's default data
-		if ($this->is_new_record())
+		if ($this->is_new_record() && $has_extension)
 			$this->init_config_data($this);
 	}
 
@@ -63,9 +59,22 @@ class Social_Provider extends Db_ActiveRecord
 
 	public function after_fetch()
 	{
-		// Mixin provider class
+		$this->init_provider_extension();
+	}
+
+	// Service methods
+	// 
+
+	public function init_provider_extension()
+	{
+		if (!strlen($this->class_name))
+			return false;
+
+		// Mixin class
 		if ($this->class_name && !$this->is_extended_with($this->class_name))
 			$this->extend_with($this->class_name);
+
+		return true;
 	}
 
 	// Options

@@ -2,7 +2,7 @@
 
 class Social_Providers extends Admin_Controller
 {
-	public $implement = 'Db_ListBehavior, Db_FormBehavior';
+	public $implement = 'Db_List_Behavior, Db_Form_Behavior';
 	public $list_model_class = 'Social_Provider';
 	public $list_record_url = null;
 	public $list_reuse_model = false;
@@ -28,8 +28,8 @@ class Social_Providers extends Admin_Controller
 		$this->app_page = 'providers';
 		$this->app_module_name = 'Social';
 
-		$this->list_record_url = url('/social/providers/edit/');
-		$this->form_redirect = url('/social/providers');
+		$this->list_record_url = url('social/providers/edit');
+		$this->form_redirect = url('social/providers');
 	}
 
 	public function index()
@@ -52,8 +52,8 @@ class Social_Providers extends Admin_Controller
 			throw new Phpr_ApplicationException('Class '.$class_name.' not found');
 
 		$model->class_name = $class_name;
-		$model->init_columns_info();
-		$model->define_form_fields();
+		$model->init_columns();
+		$model->init_form_fields();
 		$model->code = $model->get_code();
 
 		return $model;

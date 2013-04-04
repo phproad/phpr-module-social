@@ -103,7 +103,7 @@ class Social_Manager
 
 	/**
 	 * The confirmation URL a user clicks when associating a provider with
-	 * their LS account.
+	 * their user account.
 	 * @return Session flash message and redirect to homepage
 	 */
 	public function api_associate()
@@ -186,7 +186,7 @@ class Social_Manager
 		// Existing user not found, create one
 		$user = User::create();
 		$user->disable_column_cache('front_end', false);
-		$user->init_columns_info('front_end');
+		$user->init_columns('front_end');
 		$user->validation->focus_prefix = null;
 
 		// If no email is provided, make the email field optional

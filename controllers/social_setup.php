@@ -2,7 +2,7 @@
 
 class Social_Setup extends Admin_Settings_Controller
 {
-	public $implement = 'Db_FormBehavior';
+	public $implement = 'Db_Form_Behavior';
 
 	public $form_edit_title = 'Social Settings';
 	public $form_model_class = 'Social_Config';

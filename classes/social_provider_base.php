@@ -5,7 +5,7 @@
  * All other payment types must be derived from this class
  */
 
-class Social_Provider_Base extends Phpr_Extension_Base
+class Social_Provider_Base extends Phpr_Extension
 {
 	public static $driver_folder = 'social_providers';
 	public static $driver_suffix = '_provider';
