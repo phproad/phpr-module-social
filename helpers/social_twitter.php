@@ -40,29 +40,29 @@ class Social_Twitter
 		$difference = time() - $timestamp;
 
 		if ($difference < 60)
-			return $difference." seconds ago";
+			return $difference . " " . Phpr_String::word_form($difference, 'second') . " ago";
 		else 
 		{
 			$difference = round($difference / 60);
 			
 			if ($difference < 60)
-				return $difference." minutes ago";
+				return $difference . " " . Phpr_String::word_form($difference, 'minute') . " ago";
 			else
 			{
 				$difference = round($difference / 60);
 				
 				if ($difference < 24)
-					return $difference." hours ago";
+					return $difference . " " . Phpr_String::word_form($difference, 'hour') . " ago";
 				else
 				{
 					$difference = round($difference / 24);
 					
 					if ($difference < 7)
-						return $difference." days ago";
+						return $difference . " " . Phpr_String::word_form($difference, 'day') . " ago";
 					else
 					{
 						$difference = round($difference / 7);
-						return $difference." weeks ago";
+						return $difference . " " . Phpr_String::word_form($difference, 'week') . " ago";
 					}
 				}
 			}

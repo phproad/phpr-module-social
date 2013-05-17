@@ -3,7 +3,7 @@
 class Social_Actions extends Cms_Action_Base
 {
 
-	public function on_email_confirmation()
+	public function on_confirm_email()
 	{
 		// Make sure all the data we need is available
 		$module = Phpr_Module_Manager::get_by_id('social');

@@ -73,7 +73,7 @@ class Social_Facebook_Wall_Provider extends Notify_Provider_Base
 
 	public function init_template_data($host)
 	{
-		if (!$host->has_template_extension())
+		if (!$host->init_template_extension())
 			return;
 
 		if (!strlen($host->facebook_user_wall_subject)) 
