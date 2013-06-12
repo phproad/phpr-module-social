@@ -26,15 +26,6 @@ class Social_Facebook_Page_Provider extends Notify_Provider_Base
 	
 	/**
 	 * Builds the provider configuration user interface.
-	 * For drop-down and radio fields you should also add methods returning 
-	 * options. For example, of you want to have Sizes drop-down:
-	 * public function get_sizes_options();
-	 * This method should return array with keys corresponding your option identifiers
-	 * and values corresponding its titles.
-	 *
-	 * Do not add tabs to the configuration form. All fields you add in the method
-	 * will be placed to the Configuration tab.
-	 * 
 	 * @param $host ActiveRecord object to add fields to
 	 */
 	public function build_config_ui($host, $context = null)
