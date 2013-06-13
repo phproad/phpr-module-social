@@ -31,7 +31,7 @@ class Social_Module extends Core_Module_Base
 			'delete' => true
 		));
 		
-		$model->define_multi_relation_column('social_providers', 'social_providers', 'Login Providers', '@provider_id')->default_invisible();
+		$model->define_multi_relation_column('social_providers', 'social_providers', 'Login Providers', '@provider_code')->default_invisible();
 	}
 
 	public function subscribe_access_points($action = null)

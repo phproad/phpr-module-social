@@ -24,15 +24,15 @@ class Social_Manager
 	 */
 	public function api_callback()
 	{
-		$provider_id = Phpr::$request->get_field('hauth_done');
-		$provider = Social_Provider::get_provider($provider_id);
+		$provider_code = Phpr::$request->get_field('hauth_done');
+		$provider = Social_Provider::get_provider($provider_code);
 		
-		if (!$provider_id || !$provider)
+		if (!$provider_code || !$provider)
 		{
 			return $this->handle_error(array(
-				'debug' => (!$provider_id) 
+				'debug' => (!$provider_code) 
 					? "provider_callable(): No hauth_done GET variable. Unable to determine provider"
-					: "provider_callable(): No provider of id '".$provider_id."' found or provider not enabled.",
+					: "provider_callable(): No provider of id '".$provider_code."' found or provider not enabled.",
 				'user' => "We were unable to determine who you were trying to log in with."
 			));
 		}
@@ -46,7 +46,7 @@ class Social_Manager
 		catch (Exception $e)
 		{
 			return $this->handle_error(array(
-				'debug' => "provider_callable(): Provider '".$provider_id."' error: ".$e->getMessage(),
+				'debug' => "provider_callable(): Provider '".$provider_code."' error: ".$e->getMessage(),
 				'user' => $e->getMessage()
 			));
 		}
@@ -57,7 +57,7 @@ class Social_Manager
 		// So redirect to forced email page
 		if (!$user && $provider->registration_redirect)
 		{
-			$user_data['provider_id'] = $provider->get_code();
+			$user_data['provider_code'] = $provider->get_code();
 			Phpr::$session->set('social_user_data', $user_data);
 			Phpr::$response->redirect($provider->registration_redirect);
 			return;
@@ -74,13 +74,13 @@ class Social_Manager
 	 */
 	public function api_login()
 	{
-		$provider_id = Phpr::$request->get_field('provider');
-		$provider = Social_Provider::get_provider($provider_id);
+		$provider_code = Phpr::$request->get_field('provider');
+		$provider = Social_Provider::get_provider($provider_code);
 		
-		if (!$provider_id || !$provider)
+		if (!$provider_code || !$provider)
 		{
 			return $this->handle_error(array(
-				'debug' => "api_login(): No provider of id '".$provider_id."' found or provider not enabled.",
+				'debug' => "api_login(): No provider of id '".$provider_code."' found or provider not enabled.",
 				'user' => "We were unable to determine who you were trying to log in with."
 			));
 		}
@@ -93,7 +93,7 @@ class Social_Manager
 		catch (Exception $ex) 
 		{            
 			return $this->handle_error(array(
-				'debug' => "api_login(): Provider '".$provider_id."' error: ".$ex->getMessage(),
+				'debug' => "api_login(): Provider '".$provider_code."' error: ".$ex->getMessage(),
 				'user' => $ex->getMessage()
 			));
 
@@ -148,8 +148,8 @@ class Social_Manager
 		$insert_user_provider = true;
 
 		// Try to find an existing user with matching provider and token
-		$user_provider = Social_Provider_User::create()->where('provider_id=:provider_id and provider_token=:provider_token', array(
-			'provider_id' => $provider->get_code(),
+		$user_provider = Social_Provider_User::create()->where('provider_code=:provider_code and provider_token=:provider_token', array(
+			'provider_code' => $provider->get_code(),
 			'provider_token' => $user_data['token'],
 		))->find();
 
@@ -223,7 +223,7 @@ class Social_Manager
 
 		$user_provider = Social_Provider_User::create()->save(array(
 			'user_id' => $user->id,
-			'provider_id' => $provider->get_id(),
+			'provider_code' => $provider->get_code(),
 			'provider_token' => $user_data['token'],
 			'is_enabled' => $is_enabled ? 1 : 0,
 		));

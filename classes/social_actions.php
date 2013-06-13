@@ -15,7 +15,7 @@ class Social_Actions extends Cms_Action_Base
 			return;
 		}
 		
-		$provider = Social_Provider::get_provider($user_data['provider_id']);
+		$provider = Social_Provider::get_provider($user_data['provider_code']);
 		if (!$provider)
 		{
 			Phpr::$session->flash['error'] = "Unable to determine login provider.";

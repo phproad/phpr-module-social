@@ -85,7 +85,7 @@ class Social_Provider_Base extends Phpr_Extension
 
 	/**
 	 * The URL on our site that OAuth requests will respond to with login details
-	 * @param $provider_id
+	 * @param $provider_code
 	 */
 	public function get_callback_url()
 	{

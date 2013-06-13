@@ -123,7 +123,7 @@ class Social_Provider extends Db_ActiveRecord
 		return self::get_provider($code, true);
 	}
 
-	public static function get_provider($code, $active_only=false)
+	public static function get_provider($code, $active_only = false)
 	{
 		$providers = self::find_all_providers();
 		foreach ($providers as $provider)
@@ -136,7 +136,7 @@ class Social_Provider extends Db_ActiveRecord
 
 	/**
 	 * Returns a list of active Provider objects
-	 * @param (optional) array $order - array of provider_ids
+	 * @param (optional) array $order - array of provider_codes
 	 * @return array of provider objects
 	 */
 	public static function find_all_active_providers($order = array())
@@ -175,11 +175,11 @@ class Social_Provider extends Db_ActiveRecord
 	{
 		$new_order = array();
 
-		foreach ($order as $provider_id)
+		foreach ($order as $provider_code)
 		{
 		   foreach ($providers as $key => $provider)
 		   {
-				if ($provider->code == $provider_id)
+				if ($provider->code == $provider_code)
 				{
 					$new_order[] = $provider;
 					unset($providers[$key]);
