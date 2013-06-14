@@ -2,3 +2,4 @@
 #2|1.0.2 Add features for Twitter
 #3|1.0.3 Add OAuth features
 #4|1.0.4 Improve provider system for greater scalability
+#5|1.0.5 Fix to Facebook authentication adapter
