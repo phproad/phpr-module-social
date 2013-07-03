@@ -1,15 +1,15 @@
-<li>
-	<div class="hint bottom-margin-form">
-		<ol>
-			<li>Go to <a href="https://dev.twitter.com/apps" target="_blank">https://dev.twitter.com/apps</a> and create a new application.</li>
-			<li>Fill out any required fields such as the application name and description.</li>
-			<li>Enter <?= root_url('/', true) ?> as your website.</li>
-			<li>Provide this URL as the Callback URL for your application:<br/>
-				<?= Social_Manager::get_provider('twitter')->get_callback_url(); ?>
-			</li>
-			<li>Set the Default Access Type to Read.</li>
-			<li>Once you have registered, copy and past the created application credentials into this setup page.</li>
-		</ol>
-		<!--<a title="Hide this hint" href="#" class="close" onclick="return hide_tip('social_descs_google', this)">Close</a>-->
-	</div>
-</li>
+
+<div class="clearfix"></div>
+<div class="alert alert-block">
+	<ol>
+		<li>Go to <a href="https://dev.twitter.com/apps" target="_blank">https://dev.twitter.com/apps</a> and create a new application.</li>
+		<li>Fill out any required fields such as the application name and description.</li>
+		<li>Enter <?= root_url('/', true) ?> as your website.</li>
+		<li>Provide this URL as the Callback URL for your application:<br/>
+			<?= Social_Manager::get_provider('twitter')->get_callback_url(); ?>
+		</li>
+		<li>Set the Default Access Type to Read.</li>
+		<li>Once you have registered, copy and past the created application credentials into this setup page.</li>
+	</ol>
+	<!--<a title="Hide this hint" href="#" class="close" onclick="return hide_tip('social_descs_google', this)">Close</a>-->
+</div>
