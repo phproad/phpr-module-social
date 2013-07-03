@@ -32,8 +32,8 @@ class Social_Flickr_Provider extends Social_Provider_Base
 	{
 		$host = $this->get_host_object();
 		
-		require_once $this->get_vendor_path('/php-oauth-api/httpclient/http.php', true);
-		require_once $this->get_vendor_path('/php-oauth-api/oauth-api/oauth_client.php', true);
+		require_once($this->get_vendor_path('/php-oauth-api/httpclient/http.php', true));
+		require_once($this->get_vendor_path('/php-oauth-api/oauth-api/oauth_client.php', true));
 
 		$client = new oauth_client_class;
 		$client->session_started = true;
