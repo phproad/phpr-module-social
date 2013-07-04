@@ -4,7 +4,10 @@
 		<li>Go to <a href="https://developers.facebook.com/apps" target="_blank">https://www.facebook.com/developers/</a> and create a new application.</li>
 		<li>Enter your application name (the name of your site will do). Leave App Namespace blank and Web Hosting unchecked. Click continue</li>
 		<li>Enter the captcha and click Continue</li>
-		<li>Put "<?= root_url('/', true) ?>" as your App Domain</li>
+		<li>
+			Enter in the App Domains field:<br />
+			<?= Phpr::$request->get_hostname() ?>
+		</li>
 		<li>
 			Click the section Website with Facebook Login and enter the following Site URL:<br />
 			<?= Social_Manager::get_provider('facebook')->get_callback_url() ?>
