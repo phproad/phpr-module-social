@@ -22,17 +22,21 @@ class Social_Manager
 	 * Handles login for a provider when it returns to our site with the relevant info
 	 * @return void
 	 */
-	public function api_callback()
+	public function api_callback($params=array())
 	{
-		$provider_code = Phpr::$request->get_field('hauth_done');
+		if (!isset($params[0])) {
+			return $this->handle_error(array(
+				'debug' => "provider_callable(): Unable to determine which provider we are authenticating with. Missing provider code",
+				'user' => "We were unable to determine who you were trying to log in with."
+			));
+		}
+
+		$provider_code = $params[0];
 		$provider = Social_Provider::get_provider($provider_code);
 		
-		if (!$provider_code || !$provider)
-		{
+		if (!$provider) {
 			return $this->handle_error(array(
-				'debug' => (!$provider_code) 
-					? "provider_callable(): No hauth_done GET variable. Unable to determine provider"
-					: "provider_callable(): No provider of id '".$provider_code."' found or provider not enabled.",
+				'debug' => "provider_callable(): No provider of id '".$provider_code."' found or provider not enabled.",
 				'user' => "We were unable to determine who you were trying to log in with."
 			));
 		}
@@ -51,7 +55,7 @@ class Social_Manager
 			));
 		}
 
-		$user = $this->get_provider_user($provider, $user_data);
+		$user = self::get_provider_user($provider, $user_data);
 		
 		// A user wasn't found or created which means we're forcing emails
 		// So redirect to forced email page
@@ -139,10 +143,14 @@ class Social_Manager
 	}
 
 
+	//
+	// User Management
+	// 
+
 	/**
 	 * Creates a user for a given provider when an email is provided
 	 */
-	public function get_provider_user($provider, $user_data)
+	public static function get_provider_user($provider, $user_data)
 	{
 		$user = null;
 		$insert_user_provider = true;
@@ -170,18 +178,18 @@ class Social_Manager
 
 		// Try to find a user with this email if one was provided
 		$user = User::create()->find_by_email($user_data['email']);
-		if ($user)
-		{
-			$this->set_provider_user($user, $user_data, $provider, true);
+		
+		if ($user) {
+			self::set_provider_user($user, $user_data, $provider, true);
 			return $user;
 		}
 
-		$user = $this->create_new_user($user_data);
-		$this->set_provider_user($user, $user_data, $provider, true);
+		$user = self::create_new_user($user_data);
+		self::set_provider_user($user, $user_data, $provider, true);
 		return $user;
 	}
 
-	public function create_new_user($user_data)
+	public static function create_new_user($user_data)
 	{
 		// Existing user not found, create one
 		$user = User::create();
@@ -216,7 +224,7 @@ class Social_Manager
 		return $user;
 	}
 
-	public function set_provider_user($user, $user_data, $provider, $is_enabled = true)
+	public static function set_provider_user($user, $user_data, $provider, $is_enabled = true)
 	{
 		if (!$user || !$provider)
 			return false;
@@ -230,6 +238,10 @@ class Social_Manager
 
 		return $user_provider;
 	}
+
+	//
+	// Error handling
+	// 
 
 	public function handle_error($messages)
 	{

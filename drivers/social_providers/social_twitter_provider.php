@@ -37,7 +37,7 @@ class Social_Twitter_Provider extends Social_Provider_Base
 
 	public function get_login_url()
 	{
-		return root_url('/api_social_provider_login/?provider='.$this->get_code());
+		return root_url('api_social_provider_login/?provider='.$this->get_code());
 	}
 
 	public function send_login_request()
@@ -99,7 +99,7 @@ class Social_Twitter_Provider extends Social_Provider_Base
 
 		$host = $this->get_host_object();
 
-		require_once $this->get_vendor_path('/twitteroauth/twitteroauth.php');
+		require_once($this->get_vendor_path('/twitteroauth/twitteroauth.php'));
 
 		// Create TwitteroAuth object with app key/secret and token key/secret from default phase 
 		$connection = new TwitterOAuth(
@@ -112,28 +112,29 @@ class Social_Twitter_Provider extends Social_Provider_Base
 		// Request access tokens from twitter 
 		$access_token = $connection->getAccessToken($_REQUEST['oauth_verifier']);
 
-		/* $access_token will look like this:
-		array(4) [
-			oauth_token => '#########-zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz',
-			oauth_token_secret => 'zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz',
-			user_id => '#########',
-			screen_name => 'scriptsahoy'
-		]
-		*/
+		// $access_token will look like this:
+		// array(4) [
+		// 	oauth_token => '#########-zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz',
+		// 	oauth_token_secret => 'zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz',
+		// 	user_id => '#########',
+		// 	screen_name => 'scriptsahoy'
+		// ]
+		
 
-		/* Save the access tokens. Normally these would be saved in a database for future use. */
-		//Phpr::$session->set('access_token', $access_token);
+		// Save the access tokens. Normally these would be saved in a database for future use.
+		// Phpr::$session->set('access_token', $access_token);
 
-		/* Remove no longer needed request tokens */
+		// Remove no longer needed request tokens
 		Phpr::$session->remove('oauth_token');
 		Phpr::$session->remove('oauth_token_secret');
 
-		/* If HTTP response is 200 continue otherwise send to connect page to retry */
-		if ($connection->http_code != 200)
+		// If HTTP response is 200 continue otherwise send to connect page to retry
+		if ($connection->http_code != 200) {
 			return $this->set_error(array(
 				'debug' => "login(): HTTP response code was ".$connection->http_code." when trying to get access token.",
 				'customer' => "",
 			));
+		}
 
 		$screen_name = explode(' ', $access_token['screen_name'], 2);
 		$first_name = reset($screen_name);
