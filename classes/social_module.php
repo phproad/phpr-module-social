@@ -36,10 +36,11 @@ class Social_Module extends Core_Module_Base
 
 	public function subscribe_access_points($action = null)
 	{
+		$manager = new Social_Manager();
 		return array(
-			'api_social_provider_callback' => 'Social_Manager::api_callback',
-			'api_social_provider_login' => 'Social_Manager::api_login',
-			'api_social_provider_associate' => 'Social_Manager::api_associate',
+			'api_social_provider_callback' => array($manager, 'api_callback'),
+			'api_social_provider_login' => array($manager, 'api_login'),
+			'api_social_provider_associate' => array($manager, 'api_associate'),
 		);
 	}
 }
