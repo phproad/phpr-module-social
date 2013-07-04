@@ -2,11 +2,14 @@
 
 class Social_Facebook_Provider extends Social_Provider_Base
 {
+	protected $_client = null;
+	protected static $facebook_permissions = 'email,publish_stream';
+
 	public function get_info()
 	{
 		return array(
 			'code' => 'facebook',
-			'name'=>'Facebook',
+			'name' => 'Facebook',
 		);
 	}
 
@@ -30,25 +33,30 @@ class Social_Facebook_Provider extends Social_Provider_Base
 
 	public function get_client()
 	{
+		if ($this->_client !== null)
+			return $this->_client;
+
 		$host = $this->get_host_object();
-		
-		require_once $this->get_vendor_path('/facebook-php-sdk/facebook.php');
+
+		require_once($this->get_vendor_path('/facebook-php-sdk/facebook.php'));
+
+		// Fix for failed SSL verification
+		Facebook::$CURL_OPTS[CURLOPT_SSL_VERIFYPEER] = false;
+		Facebook::$CURL_OPTS[CURLOPT_SSL_VERIFYHOST] = 2;
 
 		$client = new Facebook(array(
 			'appId'  => $host->facebook_app_id,
-			'secret' => $host->facebook_secret,
+			'secret' => $host->facebook_secret
 		));
 
-		return $client;
+		return $this->_client = $client;
 	}
 
 	public function get_login_url()
 	{
 		return $this->get_client()->getLoginUrl(array(
 			'redirect_uri' => $this->get_callback_url(),
-			'scope' => array(
-				'perms' => 'email,publish_stream',
-			),
+			'scope' => array('perms' => self::$facebook_permissions),
 		));
 	}
 
@@ -57,11 +65,12 @@ class Social_Facebook_Provider extends Social_Provider_Base
 		$client = $this->get_client();
 		$user = $client->getUser();
 
-		if (!$user)
+		if (!$user) {
 			return $this->set_error(array(
 				'debug' => "login(): getUser() call failed to log us in.",
 				'customer' => "An error occurred while attempting to log you in. Please try again later.",
 			));
+		}
 
 		try 
 		{
