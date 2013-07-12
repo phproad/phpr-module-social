@@ -59,11 +59,11 @@ class Social_Manager
 		
 		// A user wasn't found or created which means we're forcing emails
 		// So redirect to forced email page
-		if (!$user && $provider->registration_redirect)
+		if (!$user)
 		{
 			$user_data['provider_code'] = $provider->get_code();
 			Phpr::$session->set('social_user_data', $user_data);
-			Phpr::$response->redirect($provider->registration_redirect);
+			Phpr::$response->redirect(root_url('social/capture-email'));
 			return;
 		}
 
