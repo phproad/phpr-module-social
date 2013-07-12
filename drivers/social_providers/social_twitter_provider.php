@@ -26,13 +26,6 @@ class Social_Twitter_Provider extends Social_Provider_Base
 		$host->add_form_partial($this->get_partial_path('hint.htm'));
 		$host->add_field('twitter_app_id', 'Consumer Key', 'full', db_text)->display_as(frm_text);
 		$host->add_field('twitter_secret', 'Consumer Secret', 'full', db_text)->display_as(frm_text);
-		$host->add_field('registration_redirect', 'Page to redirect to on registration', 'full', db_text)->display_as(frm_dropdown)->empty_option('<please select>')
-			->comment("Twitter doesn't provide an email address or name so we need to redirect to a page where the user provides this information.");
-	}
-
-	public function get_registration_redirect_options($key_value = -1)
-	{
-		return Cms_Page::create()->get_name_list();
 	}
 
 	public function get_login_url()
@@ -149,11 +142,4 @@ class Social_Twitter_Provider extends Social_Provider_Base
 		);
 	}
 
-	public function after_registration($user)
-	{
-		$host = $this->get_host_object();
-
-		if ($host->twitter_registration_redirect)
-			Phpr::$response->redirect($host->twitter_registration_redirect);
-	}
 }
