@@ -20,7 +20,7 @@
 
 			<div class="form-actions">
 				<a href="javascript:;" class="btn btn-large btn-success"
-					onclick="return $(this).getForm().sendRequest('flynsarmysociallogin:on_email_confirmation', {update: {email_confirmation: 'email_confirmation'}})">Submit</a>
+					onclick="return $(this).phpr().post('social:on_email_confirmation').send()">Submit</a>
 			</div>
 		</fieldset>
 
