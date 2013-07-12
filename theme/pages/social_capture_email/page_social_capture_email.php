@@ -1,5 +1,5 @@
 <div id="email_confirmation">
-	<?= form_open() ?>
+	<?= form_open(array('onsubmit'=>"return $(this).phpr().post('social:on_confirm_email').send()")) ?>
 		<input type="hidden" name="redirect" value="<?= root_url('') ?>" />
 		<input type="hidden" name="social_email_confirmation" value="1" />
 		
@@ -12,15 +12,14 @@
 
 		<fieldset class="form-horizontal">
 			<div class="control-group">
-				<label for="signup_email" class="control-label">Email</label>
+				<label for="signup_email" class="control-label"><?=__('Email')?></label>
 				<div class="controls">
 					<input id="signup_email" type="text" name="email" value="<? post('email', '') ?>" class="text" />
 				</div>
 			</div>
 
 			<div class="form-actions">
-				<a href="javascript:;" class="btn btn-large btn-success"
-					onclick="return $(this).phpr().post('social:on_confirm_email').send()">Submit</a>
+				<button type="submit" class="btn btn-large btn-success"><?=__('Submit')?></button>
 			</div>
 		</fieldset>
 
