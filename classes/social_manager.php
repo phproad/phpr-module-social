@@ -201,12 +201,6 @@ class Social_Manager
 		if (!isset($user_data['email']))
 			$user->validation->get_rule('email')->optional();
 
-		if (!isset($user_data['first_name']))
-			$user->validation->get_rule('first_name')->optional();
-
-		if (!isset($user_data['last_name']) )
-			$user->validation->get_rule('last_name')->optional();
-
 		//
 		// @todo this logic should execute the user:on_register action instead
 		//

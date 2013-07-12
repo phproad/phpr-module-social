@@ -6,21 +6,15 @@ class Social_Actions extends Cms_Action_Base
 	public function on_confirm_email()
 	{
 		// Make sure all the data we need is available
-		$module = Phpr_Module_Manager::get_by_id('social');
+		$module = Phpr_Module_Manager::get_module('social');
 		$user_data = Phpr::$session->get('social_user_data', array());
-		
+
 		if (empty($user_data))
-		{
-			Phpr::$session->flash['error'] = "Unable to determine login provider.";
-			return;
-		}
+			throw new Cms_Exception("Unable to determine login provider.");
 		
 		$provider = Social_Provider::get_provider($user_data['provider_code']);
 		if (!$provider)
-		{
-			Phpr::$session->flash['error'] = "Unable to determine login provider.";
-			return;
-		}
+			throw new Cms_Exception("Unable to determine login provider.");
 
 		if (post('social_email_confirmation'))
 		{
@@ -35,8 +29,9 @@ class Social_Actions extends Cms_Action_Base
 			if ($user = User::create()->find_by_email(post('email')))
 				$validation->set_error('A user with that email address is already registered!', null, true);
 
-			$user = $module->create_new_user($user_data);
-			$module->set_provider_user($user, $user_data, $provider, true);
+			$user = Social_Manager::create_new_user($user_data);
+			Social_Manager::set_provider_user($user, $user_data, $provider, true);
+			
 			Phpr::$session->remove('social_user_data');
 
 			if (post('flash'))
