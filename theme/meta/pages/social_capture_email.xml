@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<data>
+    <object>
+        <class>Cms_Page</class>
+        <file_name>social_capture_email</file_name>
+        <name>Social Capture Email</name>
+        <url>/social/capture-email</url>
+        <title>null</title>
+        <description>null</description>
+        <keywords>null</keywords>
+        <sort_order>null</sort_order>
+        <published>1</published>
+        <action_code>Custom</action_code>
+        <security_id>everyone</security_id>
+        <unique_id>51dcd8013cfe94.53302981</unique_id>
+    </object>
+</data>
