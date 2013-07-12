@@ -34,8 +34,9 @@ class Social_Actions extends Cms_Action_Base
 			$user = Social_Manager::create_new_user($user_data);
 			Social_Manager::set_provider_user($user, $user_data, $provider, true);
 
-			Phpr::$frontend_security->user_login($user->id);
 			Phpr::$session->remove('social_user_data');
+			
+			Phpr::$frontend_security->user_login($user->id);
 
 			if (post('flash'))
 				Phpr::$session->flash['success'] = post('flash');
