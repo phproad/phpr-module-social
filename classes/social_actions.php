@@ -26,12 +26,14 @@ class Social_Actions extends Cms_Action_Base
 
 			// If user already exists, attach the new provider but require they log in
 			// first to prove they own the account
-			if ($user = User::create()->find_by_email(post('email')))
+			if (User::create()->find_by_email(post('email')))
 				$validation->set_error('A user with that email address is already registered!', null, true);
+
+			$user_data['email'] = post('email');
 
 			$user = Social_Manager::create_new_user($user_data);
 			Social_Manager::set_provider_user($user, $user_data, $provider, true);
-			
+
 			Phpr::$session->remove('social_user_data');
 
 			if (post('flash'))

@@ -4,8 +4,6 @@ class Social_Provider_User extends Db_ActiveRecord
 {
 	public $table_name = 'social_provider_users';
 
-	public $implement = 'Db_Model_Sortable';
-
 	public $belongs_to = array(
 		'user' => array('class_name'=>'User', 'foreign_key'=>'user_id')
 	);
