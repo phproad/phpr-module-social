@@ -1,7 +1,7 @@
 <div id="email_confirmation">
 	<?= form_open() ?>
-	
-		<input type="hidden" name='flynsarmysocialmedia_email_confirmation' value="1" />
+		<input type="hidden" name="redirect" value="<?= root_url('') ?>" />
+		<input type="hidden" name="social_email_confirmation" value="1" />
 		
 		<?= flash_message() ?>
 
@@ -20,7 +20,7 @@
 
 			<div class="form-actions">
 				<a href="javascript:;" class="btn btn-large btn-success"
-					onclick="return $(this).phpr().post('social:on_email_confirmation').send()">Submit</a>
+					onclick="return $(this).phpr().post('social:on_confirm_email').send()">Submit</a>
 			</div>
 		</fieldset>
 
