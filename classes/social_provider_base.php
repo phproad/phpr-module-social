@@ -89,7 +89,7 @@ class Social_Provider_Base extends Phpr_Extension
 	 */
 	public function get_callback_url()
 	{
-		return root_url('api_social_provider_callback/'.$this->get_code(), true);
+		return root_url('api_social_provider_callback/'.$this->get_code(), true) . '/';
 	}
 
 	public function set_error(array $messages)
